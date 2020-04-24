@@ -69,7 +69,7 @@ public class DemoApplication {
         private DemoPublishEventHandler pubEventHandler = new DemoPublishEventHandler();
 
         public void run(String... strings) throws Exception {
-            final String msg = "Hello World";
+            final String msg = "Hello World test";
             final JCSMPSession session = solaceFactory.createSession();
 
             XMLMessageConsumer cons = session.getMessageConsumer(msgConsumer);
@@ -89,13 +89,24 @@ public class DemoApplication {
             jcsmpMsg.setDeliveryMode(DeliveryMode.PERSISTENT);
 
             logger.info("============= Sending " + msg);
-            prod.send(jcsmpMsg, topic);
+            //prod.send(jcsmpMsg, topic);
 
+            /**
             try {
                 // block here until message received, and latch will flip
                 msgConsumer.getLatch().await(10, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 logger.error("I was awoken while waiting");
+            }
+            **/
+            
+            try {
+            	while(true) {
+            		Thread.sleep(1000);
+            	}
+            } catch (InterruptedException e)
+            {
+            	logger.error("Exit");
             }
             // Close consumer
             cons.close();
