@@ -41,6 +41,12 @@ import com.solacesystems.jcsmp.Topic;
 import com.solacesystems.jcsmp.XMLMessageConsumer;
 import com.solacesystems.jcsmp.XMLMessageProducer;
 
+import com.solacesystems.jcsmp.XMLMessageListener;
+import com.solacesystems.jcsmp.BytesXMLMessage;
+import com.solacesystems.jcsmp.JCSMPException;
+import com.solacesystems.jcsmp.JCSMPFactory;
+import com.solacesystems.jcsmp.JCSMPTransportException;
+
 @SpringBootApplication
 public class DemoApplication {
 
@@ -76,7 +82,7 @@ public class DemoApplication {
             final String msg = "Hello World test";
             final JCSMPSession session = solaceFactory.createSession(solaceFactory.getDefaultContext(), sessionEvt);
 
-            XMLMessageConsumer cons = session.getMessageConsumer(msgConsumerReconnect, msgConsumer);
+            XMLMessageConsumer cons = session.getMessageConsumer(msgConsumerReconnect, (XMLMessageListener) null);
 
             session.addSubscription(topic);
             session.addSubscription(topic2);
@@ -108,9 +114,27 @@ public class DemoApplication {
             
             try {
             	while(true) {
-            		Thread.sleep(1000);
+            		//Thread.sleep(1000);
+                    try {
+                        BytesXMLMessage m = cons.receive(10000);
+                        if (m != null) {
+                            logger.info("msg received");
+                        } else {
+                            //logger.info("No message received.");
+                        }
+
+                    } catch (JCSMPTransportException e)
+                    {
+                        logger.info("---> JCSMPTransportException " + e.getMessage());
+                    } catch (JCSMPException e) 
+                    {
+                        logger.info("---> JCSMPException " + e.getMessage());
+                    } catch (Exception e)
+                    {
+                        logger.info("---> exception" + e.getMessage());
+                    }
             	}
-            } catch (InterruptedException e)
+            } catch (Exception e)
             {
             	logger.error("Exit");
             }
