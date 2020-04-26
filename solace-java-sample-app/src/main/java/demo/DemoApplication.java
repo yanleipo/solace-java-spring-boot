@@ -69,11 +69,12 @@ public class DemoApplication {
 
         private DemoMessageConsumer msgConsumer = new DemoMessageConsumer();
         private DemoMessageConsumerReconnect msgConsumerReconnect = new DemoMessageConsumerReconnect();
+        private DemoApplicationSessionEvt sessionEvt = new DemoApplicationSessionEvt();
         private DemoPublishEventHandler pubEventHandler = new DemoPublishEventHandler();
 
         public void run(String... strings) throws Exception {
             final String msg = "Hello World test";
-            final JCSMPSession session = solaceFactory.createSession();
+            final JCSMPSession session = solaceFactory.createSession(solaceFactory.getDefaultContext(), sessionEvt);
 
             XMLMessageConsumer cons = session.getMessageConsumer(msgConsumerReconnect, msgConsumer);
 
